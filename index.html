@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genz Quiz Documentation</title>
+    <meta name="description" content="Buyer-friendly installation and usage documentation for the Genz Quiz Laravel quiz platform.">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="brand">
+            <span class="brand-badge">GQ</span>
+            <div>
+                <h1>Genz Quiz Documentation</h1>
+                <p>Installation, configuration, and buyer guide</p>
+            </div>
+        </div>
+        <a class="header-link" href="#quick-start">Quick Start</a>
+    </header>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <nav>
+                <a href="#overview">Overview</a>
+                <a href="#requirements">Server Requirements</a>
+                <a href="#package">Package Contents</a>
+                <a href="#quick-start">Quick Start</a>
+                <a href="#installer">Installer Wizard</a>
+                <a href="#cpanel">cPanel / Shared Hosting</a>
+                <a href="#manual">Manual Setup</a>
+                <a href="#permissions">Permissions</a>
+                <a href="#cron">Queue and Cron</a>
+                <a href="#payments">Payments Setup</a>
+                <a href="#ai">AI Setup</a>
+                <a href="#admin">Admin Access</a>
+                <a href="#faq">Troubleshooting</a>
+                <a href="#support">Support</a>
+            </nav>
+        </aside>
+
+        <main class="content">
+            <section id="overview">
+                <span class="eyebrow">Welcome</span>
+                <h2>About Genz Quiz</h2>
+                <p>Genz Quiz is a Laravel 12 quiz platform built for Admins, Teachers, and Students. It includes quiz management, question banks, user roles, paid quizzes, AI-powered question generation, and a modern Blade, Tailwind CSS, and Alpine.js frontend.</p>
+                <div class="callout success">
+                    <strong>Good to know:</strong> This documentation is written for non-technical buyers as well as developers. Follow the installer steps in order and do not skip the database setup step.
+                </div>
+            </section>
+
+            <section id="requirements">
+                <span class="eyebrow">Before You Start</span>
+                <h2>Server Requirements</h2>
+                <ul class="check-list">
+                    <li>PHP 8.2 or higher</li>
+                    <li>MySQL 8+ or MariaDB equivalent</li>
+                    <li>PDO and PDO MySQL extensions enabled</li>
+                    <li>OpenSSL, Mbstring, Tokenizer, XML, Ctype, JSON, Fileinfo enabled</li>
+                    <li>Apache or Nginx with URL rewriting support</li>
+                    <li>Writable <code>storage</code> and <code>bootstrap/cache</code> folders</li>
+                </ul>
+                <p>For shared hosting, make sure your hosting provider supports modern Laravel applications and lets you point your domain to the correct public folder.</p>
+            </section>
+
+            <section id="package">
+                <span class="eyebrow">Files</span>
+                <h2>Package Contents</h2>
+                <p>Your download package should contain the full Laravel application source code. Important folders include:</p>
+                <div class="card-grid">
+                    <article class="mini-card">
+                        <h3><code>app/</code></h3>
+                        <p>Main application logic, controllers, models, services, and middleware.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3><code>database/</code></h3>
+                        <p>Migrations and seeders for creating tables and demo content.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3><code>public/</code></h3>
+                        <p>Public entry files, compiled assets, and web-facing index file.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3><code>resources/</code></h3>
+                        <p>Blade views, styles, and JavaScript source files.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="quick-start">
+                <span class="eyebrow">Fast Setup</span>
+                <h2>Quick Start Installation</h2>
+                <ol class="step-list">
+                    <li>Upload the project files to your server.</li>
+                    <li>Create a MySQL database and database user from your hosting panel.</li>
+                    <li>Point your domain or subdomain to Laravel’s <code>public</code> folder, or use the shared hosting structure described below.</li>
+                    <li>Visit your domain in the browser.</li>
+                    <li>If the application is not installed yet, it will redirect to the installer.</li>
+                    <li>Complete the installer steps: requirements, access, database, and admin setup.</li>
+                </ol>
+                <div class="callout warning">
+                    <strong>Important:</strong> Never leave your <code>.env</code> file publicly accessible. It contains sensitive server and database credentials.
+                </div>
+            </section>
+
+            <section id="installer">
+                <span class="eyebrow">Recommended</span>
+                <h2>Installer Wizard</h2>
+                <p>The built-in installer is the easiest way to set up Genz Quiz on a fresh server.</p>
+                <div class="timeline">
+                    <div>
+                        <h3>Step 1: Requirements Check</h3>
+                        <p>The installer checks your PHP version, required extensions, writable directories, and environment file access.</p>
+                    </div>
+                    <div>
+                        <h3>Step 2: Installation Access</h3>
+                        <p>This step controls whether installation is open, mock, or Envato-verified depending on the current build configuration.</p>
+                    </div>
+                    <div>
+                        <h3>Step 3: Database Setup</h3>
+                        <p>Enter your database host, port, database name, username, and password. The installer tests the connection before moving forward.</p>
+                    </div>
+                    <div>
+                        <h3>Step 4: Application and Admin Setup</h3>
+                        <p>Set your site name, application URL, support email, and first administrator login details.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="cpanel">
+                <span class="eyebrow">Shared Hosting</span>
+                <h2>cPanel / Shared Hosting Setup</h2>
+                <p>If your hosting uses <code>public_html</code>, the safest setup is to keep the full Laravel application outside the web root and place only the contents of the <code>public</code> folder inside <code>public_html</code>.</p>
+                <h3>Recommended structure</h3>
+                <pre><code>/home/username/genz-quiz
+/home/username/genz-quiz/app
+/home/username/genz-quiz/bootstrap
+/home/username/genz-quiz/config
+/home/username/genz-quiz/database
+/home/username/genz-quiz/resources
+/home/username/genz-quiz/routes
+/home/username/genz-quiz/storage
+/home/username/genz-quiz/vendor
+/home/username/public_html/index.php
+/home/username/public_html/.htaccess</code></pre>
+                <h3>If everything must stay inside <code>public_html</code></h3>
+                <p>You may keep the full project in <code>public_html</code>, but this is less secure. If you do this, protect hidden files and make sure requests route to Laravel correctly.</p>
+                <pre><code>&lt;Files .env&gt;
+    Order allow,deny
+    Deny from all
+&lt;/Files&gt;
+
+&lt;FilesMatch "^\\."&gt;
+    Order allow,deny
+    Deny from all
+&lt;/FilesMatch&gt;</code></pre>
+            </section>
+
+            <section id="manual">
+                <span class="eyebrow">Advanced</span>
+                <h2>Manual Setup</h2>
+                <p>If you prefer not to use the installer, you can set up the app manually from SSH or your terminal.</p>
+                <pre><code>composer install --no-dev --optimize-autoloader
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan storage:link
+php artisan optimize:clear</code></pre>
+                <p>After manual setup, make sure your <code>.env</code> values are correct and the app URL matches your domain.</p>
+            </section>
+
+            <section id="permissions">
+                <span class="eyebrow">Security</span>
+                <h2>File Permissions</h2>
+                <p>The following directories must be writable by the web server:</p>
+                <ul class="check-list">
+                    <li><code>storage/</code></li>
+                    <li><code>bootstrap/cache/</code></li>
+                </ul>
+                <p>If permissions are too restrictive, the installer may fail to save configuration or create cache files.</p>
+            </section>
+
+            <section id="cron">
+                <span class="eyebrow">Performance</span>
+                <h2>Queue and Cron Setup</h2>
+                <p>For production use, configure a cron job and queue worker if you plan to use background jobs or scheduled tasks.</p>
+                <pre><code>* * * * * php /path-to-project/artisan schedule:run &gt;/dev/null 2&gt;&amp;1</code></pre>
+                <p>If your hosting allows long-running workers, you can also run:</p>
+                <pre><code>php artisan queue:work --tries=3</code></pre>
+            </section>
+
+            <section id="payments">
+                <span class="eyebrow">Monetization</span>
+                <h2>Stripe / Payment Setup</h2>
+                <p>For premium quizzes, add your payment gateway credentials from the admin settings or through environment variables before going live.</p>
+                <ul class="check-list">
+                    <li>Add your Stripe publishable key and secret key</li>
+                    <li>Enable HTTPS on your domain</li>
+                    <li>Test with a sandbox or test card before accepting live payments</li>
+                </ul>
+            </section>
+
+            <section id="ai">
+                <span class="eyebrow">AI Feature</span>
+                <h2>AI Question Generator</h2>
+                <p>The AI question generator helps teachers create quiz questions from a topic prompt. To use real AI generation:</p>
+                <ul class="check-list">
+                    <li>Add your OpenAI API key in the application settings or environment</li>
+                    <li>Choose the preferred AI model if that option is available in the build</li>
+                    <li>Test the generated questions and review them before publishing</li>
+                </ul>
+                <p>If no API key is configured, the platform may use fallback sample questions depending on the application settings.</p>
+            </section>
+
+            <section id="admin">
+                <span class="eyebrow">After Install</span>
+                <h2>Admin Access and First Login</h2>
+                <p>After installation, log in with the administrator email and password you created in the installer.</p>
+                <ul class="check-list">
+                    <li>Open the dashboard and review platform settings</li>
+                    <li>Configure Web Config for logo, favicon, and homepage content</li>
+                    <li>Create categories, quiz posts, and questions</li>
+                    <li>Test a student quiz attempt before launch</li>
+                </ul>
+            </section>
+
+            <section id="faq">
+                <span class="eyebrow">Help</span>
+                <h2>Troubleshooting</h2>
+                <div class="faq-item">
+                    <h3>The site shows a database table does not exist error</h3>
+                    <p>Your migrations have not run yet. Complete the installer or run <code>php artisan migrate</code>.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>The installer keeps redirecting or looks incomplete</h3>
+                    <p>Clear Laravel caches with <code>php artisan optimize:clear</code> and make sure <code>APP_INSTALLED</code> is not incorrectly set to <code>true</code>.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>The domain opens a 404 or custom hosting error page</h3>
+                    <p>Your domain is probably not pointing to Laravel’s public entry point correctly. Re-check your <code>public</code> folder structure and rewrite rules.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Images or uploaded avatars are not showing</h3>
+                    <p>Create the storage symlink with <code>php artisan storage:link</code> if your hosting supports it.</p>
+                </div>
+            </section>
+
+            <section id="support">
+                <span class="eyebrow">Need Help?</span>
+                <h2>Support</h2>
+                <p>If you need help with installation, provide the following details when requesting support:</p>
+                <ul class="check-list">
+                    <li>PHP version</li>
+                    <li>Hosting type (shared hosting, VPS, cPanel, etc.)</li>
+                    <li>Error message or screenshot</li>
+                    <li>Whether the issue happens during installer, login, payment, or quiz creation</li>
+                </ul>
+                <p>This helps support resolve your issue much faster.</p>
+            </section>
+        </main>
+    </div>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 Genz Quiz. All rights reserved.</p>
+        <p>Built for buyers, beginners, and production-ready Laravel hosting.</p>
+    </footer>
+</body>
+</html>
