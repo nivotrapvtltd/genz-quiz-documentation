@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Genz Quiz Documentation</title>
-    <meta name="description" content="Buyer-friendly installation and usage documentation for the Genz Quiz Laravel quiz platform.">
+    <meta name="description" content="Installation, configuration, and full API reference for the Genz Quiz Laravel quiz platform.">
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -13,10 +13,13 @@
             <span class="brand-badge">GQ</span>
             <div>
                 <h1>Genz Quiz Documentation</h1>
-                <p>Installation, configuration, and buyer guide</p>
+                <p>Installation guide, platform setup, and complete API reference</p>
             </div>
         </div>
-        <a class="header-link" href="#quick-start">Quick Start</a>
+        <div class="header-actions">
+            <a class="header-link secondary" href="#quick-start">Install</a>
+            <a class="header-link" href="#api-reference">API Reference</a>
+        </div>
     </header>
 
     <div class="layout">
@@ -24,28 +27,43 @@
             <nav>
                 <a href="#overview">Overview</a>
                 <a href="#requirements">Server Requirements</a>
-                <a href="#package">Package Contents</a>
                 <a href="#quick-start">Quick Start</a>
-                <a href="#installer">Installer Wizard</a>
-                <a href="#cpanel">cPanel / Shared Hosting</a>
                 <a href="#manual">Manual Setup</a>
                 <a href="#permissions">Permissions</a>
-                <a href="#cron">Queue and Cron</a>
-                <a href="#payments">Payments Setup</a>
-                <a href="#ai">AI Setup</a>
-                <a href="#admin">Admin Access</a>
+                <a href="#admin">Admin Setup</a>
+                <a href="#api-reference">API Overview</a>
+                <a href="#api-auth">Auth API</a>
+                <a href="#api-public">Public API</a>
+                <a href="#api-student">Student API</a>
+                <a href="#api-payments">Payments API</a>
+                <a href="#api-admin">Admin API</a>
+                <a href="#api-errors">Errors and Security</a>
                 <a href="#faq">Troubleshooting</a>
                 <a href="#support">Support</a>
             </nav>
         </aside>
 
         <main class="content">
-            <section id="overview">
+            <section id="overview" class="hero-section">
                 <span class="eyebrow">Welcome</span>
-                <h2>About Genz Quiz</h2>
-                <p>Genz Quiz is a Laravel 12 quiz platform built for Admins, Teachers, and Students. It includes quiz management, question banks, user roles, paid quizzes, AI-powered question generation, and a modern Blade, Tailwind CSS, and Alpine.js frontend.</p>
+                <h2>Everything needed to install and integrate Genz Quiz</h2>
+                <p>Genz Quiz is a Laravel 12 quiz platform for Admins, Teachers, and Students. It supports quiz publishing, question banks, premium quiz payments, mobile-friendly student play, and a reusable JSON API for websites, mobile apps, and third-party integrations.</p>
+                <div class="hero-grid">
+                    <article class="mini-card">
+                        <h3>Built For</h3>
+                        <p>Admin dashboards, mobile apps, web frontends, and partner integrations.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>API Style</h3>
+                        <p>JSON-first endpoints with bearer authentication, pagination metadata, and centralized errors.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>Access Levels</h3>
+                        <p>Public, authenticated user, teacher or admin, and admin-only route groups.</p>
+                    </article>
+                </div>
                 <div class="callout success">
-                    <strong>Good to know:</strong> This documentation is written for non-technical buyers as well as developers. Follow the installer steps in order and do not skip the database setup step.
+                    <strong>Recommended workflow:</strong> Finish installation first, then test login with <code>POST /api/auth/login</code>, then build out quiz, payment, and admin integrations.
                 </div>
             </section>
 
@@ -60,31 +78,6 @@
                     <li>Apache or Nginx with URL rewriting support</li>
                     <li>Writable <code>storage</code> and <code>bootstrap/cache</code> folders</li>
                 </ul>
-                <p>For shared hosting, make sure your hosting provider supports modern Laravel applications and lets you point your domain to the correct public folder.</p>
-            </section>
-
-            <section id="package">
-                <span class="eyebrow">Files</span>
-                <h2>Package Contents</h2>
-                <p>Your download package should contain the full Laravel application source code. Important folders include:</p>
-                <div class="card-grid">
-                    <article class="mini-card">
-                        <h3><code>app/</code></h3>
-                        <p>Main application logic, controllers, models, services, and middleware.</p>
-                    </article>
-                    <article class="mini-card">
-                        <h3><code>database/</code></h3>
-                        <p>Migrations and seeders for creating tables and demo content.</p>
-                    </article>
-                    <article class="mini-card">
-                        <h3><code>public/</code></h3>
-                        <p>Public entry files, compiled assets, and web-facing index file.</p>
-                    </article>
-                    <article class="mini-card">
-                        <h3><code>resources/</code></h3>
-                        <p>Blade views, styles, and JavaScript source files.</p>
-                    </article>
-                </div>
             </section>
 
             <section id="quick-start">
@@ -92,177 +85,572 @@
                 <h2>Quick Start Installation</h2>
                 <ol class="step-list">
                     <li>Upload the project files to your server.</li>
-                    <li>Create a MySQL database and database user from your hosting panel.</li>
-                    <li>Point your domain or subdomain to Laravel’s <code>public</code> folder, or use the shared hosting structure described below.</li>
-                    <li>Visit your domain in the browser.</li>
-                    <li>If the application is not installed yet, it will redirect to the installer.</li>
-                    <li>Complete the installer steps: requirements, access, database, and admin setup.</li>
+                    <li>Create a database and database user.</li>
+                    <li>Point your domain to the Laravel <code>public</code> directory.</li>
+                    <li>Open the installer in the browser and complete the setup.</li>
+                    <li>Sign in as admin and configure platform, payment, and AI settings.</li>
                 </ol>
                 <div class="callout warning">
-                    <strong>Important:</strong> Never leave your <code>.env</code> file publicly accessible. It contains sensitive server and database credentials.
+                    <strong>Important:</strong> After deployment or updates, run <code>php artisan optimize:clear</code> so routes, config, and compiled views stay in sync.
                 </div>
-            </section>
-
-            <section id="installer">
-                <span class="eyebrow">Recommended</span>
-                <h2>Installer Wizard</h2>
-                <p>The built-in installer is the easiest way to set up Genz Quiz on a fresh server.</p>
-                <div class="timeline">
-                    <div>
-                        <h3>Step 1: Requirements Check</h3>
-                        <p>The installer checks your PHP version, required extensions, writable directories, and environment file access.</p>
-                    </div>
-                    <div>
-                        <h3>Step 2: Installation Access</h3>
-                        <p>This step controls whether installation is open, mock, or Envato-verified depending on the current build configuration.</p>
-                    </div>
-                    <div>
-                        <h3>Step 3: Database Setup</h3>
-                        <p>Enter your database host, port, database name, username, and password. The installer tests the connection before moving forward.</p>
-                    </div>
-                    <div>
-                        <h3>Step 4: Application and Admin Setup</h3>
-                        <p>Set your site name, application URL, support email, and first administrator login details.</p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="cpanel">
-                <span class="eyebrow">Shared Hosting</span>
-                <h2>cPanel / Shared Hosting Setup</h2>
-                <p>If your hosting uses <code>public_html</code>, the safest setup is to keep the full Laravel application outside the web root and place only the contents of the <code>public</code> folder inside <code>public_html</code>.</p>
-                <h3>Recommended structure</h3>
-                <pre><code>/home/username/genz-quiz
-/home/username/genz-quiz/app
-/home/username/genz-quiz/bootstrap
-/home/username/genz-quiz/config
-/home/username/genz-quiz/database
-/home/username/genz-quiz/resources
-/home/username/genz-quiz/routes
-/home/username/genz-quiz/storage
-/home/username/genz-quiz/vendor
-/home/username/public_html/index.php
-/home/username/public_html/.htaccess</code></pre>
-                <h3>If everything must stay inside <code>public_html</code></h3>
-                <p>You may keep the full project in <code>public_html</code>, but this is less secure. If you do this, protect hidden files and make sure requests route to Laravel correctly.</p>
-                <pre><code>&lt;Files .env&gt;
-    Order allow,deny
-    Deny from all
-&lt;/Files&gt;
-
-&lt;FilesMatch "^\\."&gt;
-    Order allow,deny
-    Deny from all
-&lt;/FilesMatch&gt;</code></pre>
             </section>
 
             <section id="manual">
                 <span class="eyebrow">Advanced</span>
                 <h2>Manual Setup</h2>
-                <p>If you prefer not to use the installer, you can set up the app manually from SSH or your terminal.</p>
                 <pre><code>composer install --no-dev --optimize-autoloader
 cp .env.example .env
 php artisan key:generate
 php artisan migrate --seed
 php artisan storage:link
 php artisan optimize:clear</code></pre>
-                <p>After manual setup, make sure your <code>.env</code> values are correct and the app URL matches your domain.</p>
+                <p>API authentication depends on all migrations being present, including the <code>api_tokens</code> table migration.</p>
             </section>
 
             <section id="permissions">
                 <span class="eyebrow">Security</span>
                 <h2>File Permissions</h2>
-                <p>The following directories must be writable by the web server:</p>
                 <ul class="check-list">
-                    <li><code>storage/</code></li>
-                    <li><code>bootstrap/cache/</code></li>
+                    <li><code>storage/</code> must be writable</li>
+                    <li><code>bootstrap/cache/</code> must be writable</li>
+                    <li><code>public/storage</code> should be a symlink to <code>storage/app/public</code></li>
                 </ul>
-                <p>If permissions are too restrictive, the installer may fail to save configuration or create cache files.</p>
-            </section>
-
-            <section id="cron">
-                <span class="eyebrow">Performance</span>
-                <h2>Queue and Cron Setup</h2>
-                <p>For production use, configure a cron job and queue worker if you plan to use background jobs or scheduled tasks.</p>
-                <pre><code>* * * * * php /path-to-project/artisan schedule:run &gt;/dev/null 2&gt;&amp;1</code></pre>
-                <p>If your hosting allows long-running workers, you can also run:</p>
-                <pre><code>php artisan queue:work --tries=3</code></pre>
-            </section>
-
-            <section id="payments">
-                <span class="eyebrow">Monetization</span>
-                <h2>Stripe / Payment Setup</h2>
-                <p>For premium quizzes, add your payment gateway credentials from the admin settings or through environment variables before going live.</p>
-                <ul class="check-list">
-                    <li>Add your Stripe publishable key and secret key</li>
-                    <li>Enable HTTPS on your domain</li>
-                    <li>Test with a sandbox or test card before accepting live payments</li>
-                </ul>
-            </section>
-
-            <section id="ai">
-                <span class="eyebrow">AI Feature</span>
-                <h2>AI Question Generator</h2>
-                <p>The AI question generator helps teachers create quiz questions from a topic prompt. To use real AI generation:</p>
-                <ul class="check-list">
-                    <li>Add your OpenAI API key in the application settings or environment</li>
-                    <li>Choose the preferred AI model if that option is available in the build</li>
-                    <li>Test the generated questions and review them before publishing</li>
-                </ul>
-                <p>If no API key is configured, the platform may use fallback sample questions depending on the application settings.</p>
+                <p>If uploads are not visible, verify the storage link from admin settings or run <code>php artisan storage:link</code>.</p>
             </section>
 
             <section id="admin">
                 <span class="eyebrow">After Install</span>
-                <h2>Admin Access and First Login</h2>
-                <p>After installation, log in with the administrator email and password you created in the installer.</p>
-                <ul class="check-list">
-                    <li>Open the dashboard and review platform settings</li>
-                    <li>Configure Web Config for logo, favicon, and homepage content</li>
-                    <li>Create categories, quiz posts, and questions</li>
-                    <li>Test a student quiz attempt before launch</li>
-                </ul>
+                <h2>Admin Setup Checklist</h2>
+                <div class="card-grid">
+                    <article class="mini-card">
+                        <h3>Branding</h3>
+                        <p>Configure logo, homepage content, and platform identity.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>Payments</h3>
+                        <p>Enable Stripe or Razorpay before selling premium quizzes.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>Quiz Content</h3>
+                        <p>Create categories, quizzes, and questions before inviting users.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>Users</h3>
+                        <p>Review roles, active status, and permissions for Admin, Teacher, and Student accounts.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="api-reference">
+                <span class="eyebrow">JSON API</span>
+                <h2>API Overview</h2>
+                <p>The platform exposes a full JSON API for authentication, quiz browsing, quiz play, result history, payments, and admin management. The API is designed to be secure, scalable, and reusable across web and mobile clients.</p>
+                <div class="info-grid">
+                    <article class="mini-card">
+                        <h3>Base URL</h3>
+                        <p><code>https://your-domain.com/api</code></p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>Auth Format</h3>
+                        <p><code>Authorization: Bearer YOUR_TOKEN</code></p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>Content Type</h3>
+                        <p><code>application/json</code> for most endpoints, multipart for avatar upload.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>Rate Limiting</h3>
+                        <p>General API limits apply to all routes, with stricter limits on auth endpoints.</p>
+                    </article>
+                </div>
+                <div class="callout success">
+                    <strong>Recommended headers:</strong> Send <code>Accept: application/json</code> on every request. Use <code>Content-Type: application/json</code> for JSON body requests.
+                </div>
+                <pre><code>Accept: application/json
+Content-Type: application/json
+Authorization: Bearer YOUR_TOKEN</code></pre>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Group</th>
+                                <th>Who Can Access</th>
+                                <th>Examples</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Public</td>
+                                <td>Anyone</td>
+                                <td><code>/api/ping</code>, <code>/api/meta</code>, <code>/api/quizzes</code></td>
+                            </tr>
+                            <tr>
+                                <td>Auth</td>
+                                <td>Anyone for login or register, authenticated users for profile or logout</td>
+                                <td><code>/api/auth/login</code>, <code>/api/auth/me</code></td>
+                            </tr>
+                            <tr>
+                                <td>Student</td>
+                                <td>Authenticated users</td>
+                                <td><code>/api/dashboard</code>, <code>/api/my/attempts</code>, <code>/api/quizzes/{quiz}/submit</code></td>
+                            </tr>
+                            <tr>
+                                <td>Payments</td>
+                                <td>Authenticated users</td>
+                                <td><code>/api/payments/history</code>, <code>/api/payments/{quiz}/checkout</code></td>
+                            </tr>
+                            <tr>
+                                <td>Admin</td>
+                                <td>Teacher or Admin, with some routes Admin-only</td>
+                                <td><code>/api/admin/quizzes</code>, <code>/api/admin/users</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="api-auth">
+                <span class="eyebrow">Authentication</span>
+                <h2>Auth API</h2>
+                <div class="endpoint-grid">
+                    <article class="endpoint-card featured">
+                        <div class="endpoint-head">
+                            <span class="method post">POST</span>
+                            <code>/api/auth/login</code>
+                        </div>
+                        <p>Authenticate a user and receive a bearer token. This is the main login endpoint for web apps, mobile apps, and third-party clients.</p>
+                        <div class="two-col">
+                            <div>
+                                <h3>Request</h3>
+                                <pre><code>{
+  "email": "user@example.com",
+  "password": "password"
+}</code></pre>
+                            </div>
+                            <div>
+                                <h3>Success Response</h3>
+                                <pre><code>{
+  "message": "Login successful.",
+  "token": "plain-text-api-token",
+  "token_type": "Bearer",
+  "user": {
+    "id": 1,
+    "name": "Admin",
+    "email": "admin@example.com",
+    "phone": null,
+    "avatar_url": "https://your-domain.com/storage/avatars/example.png",
+    "role": {
+      "id": 1,
+      "name": "Admin",
+      "slug": "admin"
+    },
+    "is_active": true
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                        <div class="note-list">
+                            <span><strong>Required fields:</strong> <code>email</code>, <code>password</code></span>
+                            <span><strong>Optional fields:</strong> <code>device_name</code></span>
+                            <span><strong>Content type:</strong> <code>application/json</code> or <code>application/x-www-form-urlencoded</code></span>
+                        </div>
+                    </article>
+
+                    <article class="endpoint-card">
+                        <div class="endpoint-head">
+                            <span class="method get">GET</span>
+                            <code>/api/auth/login</code>
+                        </div>
+                        <p>Returns endpoint usage help when opened directly in the browser.</p>
+                        <pre><code>{
+  "message": "Use POST to log in and receive a bearer token.",
+  "endpoint": "/api/auth/login",
+  "method": "POST",
+  "content_type": "application/json or application/x-www-form-urlencoded",
+  "required_fields": ["email", "password"],
+  "optional_fields": ["device_name"]
+}</code></pre>
+                    </article>
+
+                    <article class="endpoint-card">
+                        <div class="endpoint-head">
+                            <span class="method post">POST</span>
+                            <code>/api/auth/register</code>
+                        </div>
+                        <p>Create a student account and receive a bearer token immediately.</p>
+                        <pre><code>{
+  "name": "Student User",
+  "email": "student@example.com",
+  "password": "Password123!",
+  "password_confirmation": "Password123!",
+  "phone": "9876543210",
+  "device_name": "android-app"
+}</code></pre>
+                        <pre><code>{
+  "message": "Registration successful.",
+  "token": "plain-text-api-token",
+  "token_type": "Bearer",
+  "user": {
+    "id": 12,
+    "name": "Student User",
+    "email": "student@example.com",
+    "role": {
+      "id": 3,
+      "name": "Student",
+      "slug": "student"
+    }
+  }
+}</code></pre>
+                    </article>
+
+                    <article class="endpoint-card compact">
+                        <div class="endpoint-head">
+                            <span class="method get">GET</span>
+                            <code>/api/auth/register</code>
+                        </div>
+                        <p>Returns browser-safe registration instructions and required fields.</p>
+                    </article>
+
+                    <article class="endpoint-card compact">
+                        <div class="endpoint-head">
+                            <span class="method get">GET</span>
+                            <code>/api/auth/me</code>
+                        </div>
+                        <p>Returns the authenticated user profile.</p>
+                    </article>
+
+                    <article class="endpoint-card compact">
+                        <div class="endpoint-head">
+                            <span class="method put">PUT</span>
+                            <code>/api/auth/me</code>
+                        </div>
+                        <p>Updates profile fields including name, email, phone, avatar, and password.</p>
+                    </article>
+
+                    <article class="endpoint-card compact">
+                        <div class="endpoint-head">
+                            <span class="method post">POST</span>
+                            <code>/api/auth/logout</code>
+                        </div>
+                        <p>Deletes the current API token and logs the user out.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="api-public">
+                <span class="eyebrow">Public Endpoints</span>
+                <h2>Public Quiz API</h2>
+                <div class="endpoint-list">
+                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/ping</code><span>Simple health check for apps and uptime monitors.</span></div>
+                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/meta</code><span>Returns platform enums and metadata for building forms dynamically.</span></div>
+                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/categories</code><span>Returns active quiz categories.</span></div>
+                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/quizzes</code><span>Returns public quiz listing with pagination. Query params: <code>category</code>, <code>per_page</code>.</span></div>
+                </div>
+                <div class="two-col">
+                    <div>
+                        <h3>Example: <code>GET /api/meta</code></h3>
+                        <pre><code>{
+  "data": {
+    "question_types": ["multiple_choice", "true_false", "short_answer"],
+    "quiz_access_types": ["free", "premium"],
+    "quiz_difficulties": ["beginner", "intermediate", "advanced"],
+    "roles": [
+      { "id": 1, "name": "Admin", "slug": "admin" },
+      { "id": 2, "name": "Teacher", "slug": "teacher" },
+      { "id": 3, "name": "Student", "slug": "student" }
+    ],
+    "payment_statuses": ["pending", "paid", "failed"],
+    "payment_providers": ["stripe", "razorpay"],
+    "active_payment_gateway": "stripe"
+  }
+}</code></pre>
+                    </div>
+                    <div>
+                        <h3>Example: <code>GET /api/quizzes</code></h3>
+                        <pre><code>{
+  "data": [
+    {
+      "id": 1,
+      "title": "Modern Culture Challenge",
+      "slug": "modern-culture-challenge",
+      "difficulty": "beginner",
+      "access_type": "free",
+      "questions_count": 20
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "last_page": 3,
+    "per_page": 10,
+    "total": 25
+  }
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="api-student">
+                <span class="eyebrow">Authenticated User</span>
+                <h2>Student API</h2>
+                <div class="endpoint-list">
+                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/dashboard</code><span>Returns personal stats, recent attempts, and latest quizzes. Admins and Teachers also receive platform stats.</span></div>
+                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/quizzes/{quiz}</code><span>Returns quiz detail including questions and access state for the current user.</span></div>
+                    <div class="endpoint-row"><span class="method post">POST</span><code>/api/quizzes/{quiz}/submit</code><span>Submits answers and creates an attempt record.</span></div>
+                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/quizzes/{quiz}/attempts/{attempt}</code><span>Returns a detailed result for one of the authenticated user's attempts.</span></div>
+                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/my/attempts</code><span>Returns paginated attempt history for the current user.</span></div>
+                </div>
+                <div class="endpoint-grid single-row">
+                    <article class="endpoint-card">
+                        <div class="endpoint-head">
+                            <span class="method get">GET</span>
+                            <code>/api/dashboard</code>
+                        </div>
+                        <pre><code>{
+  "personal_stats": {
+    "quiz_visits": 18,
+    "quizzes_played": 5,
+    "attempts": 8,
+    "average_score": 76.5
+  },
+  "platform_stats": null,
+  "recent_attempts": [],
+  "latest_quizzes": []
+}</code></pre>
+                    </article>
+                    <article class="endpoint-card">
+                        <div class="endpoint-head">
+                            <span class="method post">POST</span>
+                            <code>/api/quizzes/{quiz}/submit</code>
+                        </div>
+                        <h3>Request</h3>
+                        <pre><code>{
+  "answers": [
+    { "question_id": 10, "selected_option_id": 34 },
+    { "question_id": 11, "selected_option_id": 40 }
+  ]
+}</code></pre>
+                        <h3>Response</h3>
+                        <pre><code>{
+  "message": "Quiz submitted successfully.",
+  "data": {
+    "id": 25,
+    "score": 8,
+    "percentage": 80,
+    "submitted_at": "2026-03-20T10:30:00Z"
+  }
+}</code></pre>
+                    </article>
+                </div>
+            </section>
+
+            <section id="api-payments">
+                <span class="eyebrow">Premium Access</span>
+                <h2>Payments API</h2>
+                <div class="endpoint-list">
+                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/payments/history</code><span>Returns paginated payment history for the authenticated user with summary and filters in meta.</span></div>
+                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/payments/{payment}</code><span>Returns a single payment record for the current user.</span></div>
+                    <div class="endpoint-row"><span class="method post">POST</span><code>/api/payments/{quiz}/checkout</code><span>Creates a payment session for a premium quiz.</span></div>
+                    <div class="endpoint-row"><span class="method post">POST</span><code>/api/payments/{payment}/razorpay/verify</code><span>Completes Razorpay verification and marks the payment successful.</span></div>
+                </div>
+                <div class="two-col">
+                    <div>
+                        <h3>Example: checkout response</h3>
+                        <pre><code>{
+  "message": "Checkout session created successfully.",
+  "data": {
+    "payment": {
+      "id": 8,
+      "provider": "stripe",
+      "amount": 199,
+      "currency": "INR",
+      "status": "pending"
+    },
+    "gateway": "stripe",
+    "redirect_url": "https://checkout.stripe.com/..."
+  }
+}</code></pre>
+                    </div>
+                    <div>
+                        <h3>Example: history response</h3>
+                        <pre><code>{
+  "data": [
+    {
+      "id": 8,
+      "provider": "stripe",
+      "status": "paid",
+      "amount": 199,
+      "currency": "INR"
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "last_page": 1,
+    "per_page": 12,
+    "total": 1,
+    "summary": {
+      "total_amount": 199,
+      "paid_count": 1
+    }
+  }
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="api-admin">
+                <span class="eyebrow">Management</span>
+                <h2>Admin API</h2>
+                <p>These endpoints are intended for dashboards, staff tools, and back-office integrations. Category, quiz, question, and AI generation endpoints are available to Teachers and Admins. User and payment management endpoints are Admin-only.</p>
+                <div class="api-group-grid">
+                    <article class="api-group-card">
+                        <h3>Categories</h3>
+                        <ul class="compact-list">
+                            <li><code>GET /api/admin/categories</code></li>
+                            <li><code>POST /api/admin/categories</code></li>
+                            <li><code>GET /api/admin/categories/{category}</code></li>
+                            <li><code>PUT /api/admin/categories/{category}</code></li>
+                            <li><code>DELETE /api/admin/categories/{category}</code></li>
+                        </ul>
+                    </article>
+                    <article class="api-group-card">
+                        <h3>Quizzes</h3>
+                        <ul class="compact-list">
+                            <li><code>GET /api/admin/quizzes</code></li>
+                            <li><code>POST /api/admin/quizzes</code></li>
+                            <li><code>GET /api/admin/quizzes/{quiz}</code></li>
+                            <li><code>PUT /api/admin/quizzes/{quiz}</code></li>
+                            <li><code>DELETE /api/admin/quizzes/{quiz}</code></li>
+                            <li><code>GET /api/admin/quizzes/{quiz}/export</code></li>
+                            <li><code>POST /api/admin/quizzes/{quiz}/import</code></li>
+                        </ul>
+                    </article>
+                    <article class="api-group-card">
+                        <h3>Questions</h3>
+                        <ul class="compact-list">
+                            <li><code>GET /api/admin/questions</code></li>
+                            <li><code>POST /api/admin/questions</code></li>
+                            <li><code>GET /api/admin/questions/{question}</code></li>
+                            <li><code>PUT /api/admin/questions/{question}</code></li>
+                            <li><code>DELETE /api/admin/questions/{question}</code></li>
+                        </ul>
+                    </article>
+                    <article class="api-group-card">
+                        <h3>AI Generation</h3>
+                        <ul class="compact-list">
+                            <li><code>POST /api/ai/questions/generate</code></li>
+                        </ul>
+                    </article>
+                    <article class="api-group-card">
+                        <h3>Users</h3>
+                        <ul class="compact-list">
+                            <li><code>GET /api/admin/users</code></li>
+                            <li><code>POST /api/admin/users</code></li>
+                            <li><code>GET /api/admin/users/{user}</code></li>
+                            <li><code>PUT /api/admin/users/{user}</code></li>
+                            <li><code>DELETE /api/admin/users/{user}</code></li>
+                        </ul>
+                    </article>
+                    <article class="api-group-card">
+                        <h3>Admin Payments</h3>
+                        <ul class="compact-list">
+                            <li><code>GET /api/admin/payments</code></li>
+                            <li><code>GET /api/admin/payments/{payment}</code></li>
+                        </ul>
+                    </article>
+                </div>
+                <div class="two-col">
+                    <div>
+                        <h3>Example: create quiz request</h3>
+                        <pre><code>{
+  "title": "Aviation Basics Mock Test",
+  "description": "Practice exam for new students",
+  "category_id": 1,
+  "difficulty": "beginner",
+  "access_type": "premium",
+  "price": 199,
+  "is_active": true
+}</code></pre>
+                    </div>
+                    <div>
+                        <h3>Example: create question request</h3>
+                        <pre><code>{
+  "quiz_id": 1,
+  "question": "What does ATC stand for?",
+  "type": "multiple_choice",
+  "options": [
+    { "text": "Air Traffic Control", "is_correct": true },
+    { "text": "Airline Travel Center", "is_correct": false }
+  ]
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="api-errors">
+                <span class="eyebrow">Reliability</span>
+                <h2>Errors and Security</h2>
+                <div class="card-grid">
+                    <article class="mini-card">
+                        <h3>404 JSON Errors</h3>
+                        <p>Unknown API routes return JSON instead of an HTML error page.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>405 Browser Safety</h3>
+                        <p>Opening auth endpoints directly in the browser returns usage instructions instead of raw method errors.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>429 Rate Limiting</h3>
+                        <p>API and auth routes are rate limited centrally to reduce abuse and brute-force login attempts.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>Secure Headers</h3>
+                        <p>API responses include hardened headers such as <code>X-Frame-Options</code>, <code>X-Content-Type-Options</code>, and cache restrictions for auth-sensitive responses.</p>
+                    </article>
+                </div>
+                <h3>Common error responses</h3>
+                <div class="two-col">
+                    <pre><code>{
+  "message": "The provided credentials do not match our records."
+}</code></pre>
+                    <pre><code>{
+  "message": "An unexpected API error occurred.",
+  "status": 500
+}</code></pre>
+                </div>
             </section>
 
             <section id="faq">
-                <span class="eyebrow">Help</span>
-                <h2>Troubleshooting</h2>
-                <div class="faq-item">
-                    <h3>The site shows a database table does not exist error</h3>
-                    <p>Your migrations have not run yet. Complete the installer or run <code>php artisan migrate</code>.</p>
-                </div>
-                <div class="faq-item">
-                    <h3>The installer keeps redirecting or looks incomplete</h3>
-                    <p>Clear Laravel caches with <code>php artisan optimize:clear</code> and make sure <code>APP_INSTALLED</code> is not incorrectly set to <code>true</code>.</p>
-                </div>
-                <div class="faq-item">
-                    <h3>The domain opens a 404 or custom hosting error page</h3>
-                    <p>Your domain is probably not pointing to Laravel’s public entry point correctly. Re-check your <code>public</code> folder structure and rewrite rules.</p>
-                </div>
-                <div class="faq-item">
-                    <h3>Images or uploaded avatars are not showing</h3>
-                    <p>Create the storage symlink with <code>php artisan storage:link</code> if your hosting supports it.</p>
+                <span class="eyebrow">Troubleshooting</span>
+                <h2>Frequently Asked Questions</h2>
+                <div class="faq-grid">
+                    <article class="faq-item">
+                        <h3>Why does login return a 500 error?</h3>
+                        <p>Check pending migrations, clear Laravel caches with <code>php artisan optimize:clear</code>, and make sure the running server uses the same database as your terminal.</p>
+                    </article>
+                    <article class="faq-item">
+                        <h3>Why do uploaded avatars not load?</h3>
+                        <p>Make sure <code>public/storage</code> is a valid symlink to <code>storage/app/public</code>.</p>
+                    </article>
+                    <article class="faq-item">
+                        <h3>Why do auth endpoints show JSON in the browser?</h3>
+                        <p>That is intentional. Browser-safe help responses prevent confusing 405 HTML pages for API-only routes.</p>
+                    </article>
+                    <article class="faq-item">
+                        <h3>How should mobile apps store tokens?</h3>
+                        <p>Store bearer tokens securely in the platform's secure storage, then send them in the <code>Authorization</code> header on protected requests.</p>
+                    </article>
                 </div>
             </section>
 
             <section id="support">
-                <span class="eyebrow">Need Help?</span>
-                <h2>Support</h2>
-                <p>If you need help with installation, provide the following details when requesting support:</p>
-                <ul class="check-list">
-                    <li>PHP version</li>
-                    <li>Hosting type (shared hosting, VPS, cPanel, etc.)</li>
-                    <li>Error message or screenshot</li>
-                    <li>Whether the issue happens during installer, login, payment, or quiz creation</li>
-                </ul>
-                <p>This helps support resolve your issue much faster.</p>
+                <span class="eyebrow">Need Help</span>
+                <h2>Support Notes</h2>
+                <p>When requesting support, include the endpoint, HTTP method, request body, response body, and the exact timestamp of the issue. That makes server log checks much faster.</p>
+                <div class="callout success">
+                    <strong>Best practice:</strong> Keep this documentation updated whenever you add a new API resource, new role restriction, or new payment provider.
+                </div>
             </section>
         </main>
     </div>
-
-    <footer class="site-footer">
-        <p>&copy; 2026 Genz Quiz. All rights reserved.</p>
-        <p>Built for buyers, beginners, and production-ready Laravel hosting.</p>
-    </footer>
 </body>
 </html>
