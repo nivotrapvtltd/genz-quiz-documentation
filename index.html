@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Genz Quiz Documentation</title>
-    <meta name="description" content="Installation, configuration, and full API reference for the Genz Quiz Laravel quiz platform.">
+    <meta name="description" content="Installation, shared hosting deployment, configuration, and API reference for the Genz Quiz Laravel quiz platform.">
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -13,11 +13,15 @@
             <span class="brand-badge">GQ</span>
             <div>
                 <h1>Genz Quiz Documentation</h1>
-                <p>Installation guide, platform setup, and complete API reference</p>
+                <p>Installation guide, shared hosting steps, and complete API reference</p>
             </div>
         </div>
         <div class="header-actions">
-            <a class="header-link secondary" href="#quick-start">Install</a>
+            <label class="doc-search" aria-label="Search documentation">
+                <span class="search-label">Search</span>
+                <input id="doc-search-input" type="search" placeholder="Search install, hosting, API..." autocomplete="off">
+            </label>
+            <a class="header-link secondary" href="#shared-hosting">Shared Hosting</a>
             <a class="header-link" href="#api-reference">API Reference</a>
         </div>
     </header>
@@ -27,10 +31,13 @@
             <nav>
                 <a href="#overview">Overview</a>
                 <a href="#requirements">Server Requirements</a>
+                <a href="#deployment-checklist">Deployment Checklist</a>
                 <a href="#quick-start">Quick Start</a>
+                <a href="#shared-hosting">Shared Hosting Guide</a>
                 <a href="#manual">Manual Setup</a>
                 <a href="#permissions">Permissions</a>
                 <a href="#admin">Admin Setup</a>
+                <a href="#scaling">Scalability Notes</a>
                 <a href="#api-reference">API Overview</a>
                 <a href="#api-auth">Auth API</a>
                 <a href="#api-public">Public API</a>
@@ -43,19 +50,23 @@
             </nav>
         </aside>
 
-        <main class="content">
-            <section id="overview" class="hero-section">
+        <main class="content" id="doc-content">
+            <section id="overview" class="hero-section doc-section" data-search="overview intro documentation genz quiz install hosting api">
                 <span class="eyebrow">Welcome</span>
-                <h2>Everything needed to install and integrate Genz Quiz</h2>
-                <p>Genz Quiz is a Laravel 12 quiz platform for Admins, Teachers, and Students. It supports quiz publishing, question banks, premium quiz payments, mobile-friendly student play, and a reusable JSON API for websites, mobile apps, and third-party integrations.</p>
+                <h2>Everything needed to install, deploy, and extend Genz Quiz</h2>
+                <p>Genz Quiz is a Laravel 12 quiz platform for Admins, Teachers, and Students. It supports quiz publishing, question banks, premium quiz payments, mobile-friendly quiz play, and a reusable JSON API for websites, mobile apps, and partner integrations.</p>
                 <div class="hero-grid">
                     <article class="mini-card">
                         <h3>Built For</h3>
-                        <p>Admin dashboards, mobile apps, web frontends, and partner integrations.</p>
+                        <p>Admin dashboards, coaching institutes, mobile apps, web frontends, and third-party integrations.</p>
                     </article>
                     <article class="mini-card">
-                        <h3>API Style</h3>
-                        <p>JSON-first endpoints with bearer authentication, pagination metadata, and centralized errors.</p>
+                        <h3>Deployment Friendly</h3>
+                        <p>Works on VPS, cloud servers, and shared hosting with a fallback root loader for hosts that cannot point directly to <code>public</code>.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>Reusable API</h3>
+                        <p>JSON-first endpoints with bearer authentication, pagination metadata, and centralized API error handling.</p>
                     </article>
                     <article class="mini-card">
                         <h3>Access Levels</h3>
@@ -63,11 +74,11 @@
                     </article>
                 </div>
                 <div class="callout success">
-                    <strong>Recommended workflow:</strong> Finish installation first, then test login with <code>POST /api/auth/login</code>, then build out quiz, payment, and admin integrations.
+                    <strong>Recommended workflow:</strong> finish deployment first, confirm the website loads with CSS, test login, then configure branding, payments, and API integrations.
                 </div>
             </section>
 
-            <section id="requirements">
+            <section id="requirements" class="doc-section" data-search="requirements php mysql apache nginx storage bootstrap cache shared hosting">
                 <span class="eyebrow">Before You Start</span>
                 <h2>Server Requirements</h2>
                 <ul class="check-list">
@@ -77,71 +88,175 @@
                     <li>OpenSSL, Mbstring, Tokenizer, XML, Ctype, JSON, Fileinfo enabled</li>
                     <li>Apache or Nginx with URL rewriting support</li>
                     <li>Writable <code>storage</code> and <code>bootstrap/cache</code> folders</li>
+                    <li>Ability to upload the <code>public/build</code> folder generated by Vite</li>
                 </ul>
+                <div class="callout warning">
+                    <strong>Important:</strong> if the hosted site loads without CSS, the most common causes are missing <code>public/build</code> files, wrong document root, stale Laravel config cache, or incorrect values in the live <code>.env</code>.
+                </div>
             </section>
 
-            <section id="quick-start">
+            <section id="deployment-checklist" class="doc-section" data-search="deployment checklist production env build cache migrate shared hosting steps">
+                <span class="eyebrow">Checklist</span>
+                <h2>Deployment Checklist</h2>
+                <div class="card-grid">
+                    <article class="mini-card">
+                        <h3>1. Prepare Build</h3>
+                        <p>Run <code>npm install</code> and <code>npm run build</code> before uploading, then confirm <code>public/build/manifest.json</code> exists.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>2. Configure Environment</h3>
+                        <p>Copy production values into the live <code>.env</code>. Laravel does not auto-read <code>.env.production</code>.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>3. Run Migrations</h3>
+                        <p>Run database migrations so sessions, cache, jobs, settings, payments, and API token tables exist.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>4. Clear Cache</h3>
+                        <p>Run <code>php artisan optimize:clear</code> after deployment or environment changes.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="quick-start" class="doc-section" data-search="quick start install fast setup beginner upload database domain installer admin">
                 <span class="eyebrow">Fast Setup</span>
                 <h2>Quick Start Installation</h2>
                 <ol class="step-list">
                     <li>Upload the project files to your server.</li>
-                    <li>Create a database and database user.</li>
-                    <li>Point your domain to the Laravel <code>public</code> directory.</li>
-                    <li>Open the installer in the browser and complete the setup.</li>
-                    <li>Sign in as admin and configure platform, payment, and AI settings.</li>
+                    <li>Create a MySQL database and database user.</li>
+                    <li>Upload all generated Vite assets inside <code>public/build</code>.</li>
+                    <li>Copy your production environment values into the live <code>.env</code> file.</li>
+                    <li>Point your domain to the Laravel <code>public</code> directory. If your host cannot do that, use the included root <code>index.php</code> and root <code>.htaccess</code> fallback.</li>
+                    <li>Run <code>php artisan migrate --force</code>.</li>
+                    <li>Run <code>php artisan storage:link</code>.</li>
+                    <li>Run <code>php artisan optimize:clear</code>.</li>
+                    <li>Open the website and confirm the homepage loads with CSS before continuing.</li>
+                    <li>Sign in as admin and configure branding, payment settings, and legal pages.</li>
                 </ol>
-                <div class="callout warning">
-                    <strong>Important:</strong> After deployment or updates, run <code>php artisan optimize:clear</code> so routes, config, and compiled views stay in sync.
+            </section>
+
+            <section id="shared-hosting" class="doc-section" data-search="shared hosting cpanel hostinger deploy beginner fresher step by step public_html css not loading">
+                <span class="eyebrow">Shared Hosting</span>
+                <h2>Step-by-Step Shared Hosting Deployment Guide</h2>
+                <p>This guide is written for first-time buyers and freshers who want to deploy the script on cPanel, Hostinger, Namecheap, or similar shared hosting.</p>
+
+                <div class="callout success">
+                    <strong>Best result:</strong> set the domain document root to the project <code>public</code> folder. If that option is not available, this project includes a root loader fallback so the app can still run from the project root.
+                </div>
+
+                <ol class="step-list">
+                    <li>Download the project package on your local machine and extract it.</li>
+                    <li>On your computer, run <code>npm install</code> and <code>npm run build</code> so the <code>public/build</code> folder is ready.</li>
+                    <li>Open your hosting control panel and create a new MySQL database, database user, and password.</li>
+                    <li>Upload the full project to the server using File Manager or FTP.</li>
+                    <li>If your host supports custom document root, point the domain or subdomain to the project <code>public</code> folder.</li>
+                    <li>If your host only serves <code>public_html</code> or project root, keep the included root <code>index.php</code> and root <code>.htaccess</code> files in place so Laravel requests are forwarded into <code>public</code>.</li>
+                    <li>Rename or copy <code>.env.production</code> to the live <code>.env</code>, then update database credentials, app URL, and mail or payment settings.</li>
+                    <li>Make sure <code>APP_URL</code> matches the real domain, for example <code>https://your-domain.com</code>.</li>
+                    <li>Run <code>php artisan migrate --force</code> from terminal access if your host provides SSH.</li>
+                    <li>If your host does not provide SSH, use the built-in installer flow and finish the database and admin setup from the browser.</li>
+                    <li>Run <code>php artisan storage:link</code>. If symlinks are blocked by the host, manually ensure uploaded files are exposed correctly from <code>public/storage</code>.</li>
+                    <li>Run <code>php artisan optimize:clear</code> after every env change, code upload, or migration update.</li>
+                    <li>Visit the website homepage and inspect whether CSS is loading. If the design is broken, verify <code>public/build/manifest.json</code> and all asset files exist on the server.</li>
+                    <li>Log in to the dashboard and upload branding assets, payment keys, and policy pages.</li>
+                </ol>
+
+                <div class="two-col">
+                    <div class="mini-card">
+                        <h3>If CSS Is Missing on Shared Hosting</h3>
+                        <ul class="check-list">
+                            <li>Confirm <code>public/build/manifest.json</code> exists on the server.</li>
+                            <li>Confirm the files inside <code>public/build/assets</code> were uploaded.</li>
+                            <li>Confirm the site is running from <code>public</code> or the root fallback files are present.</li>
+                            <li>Confirm the live <code>.env</code> has the correct <code>APP_URL</code>.</li>
+                            <li>Run <code>php artisan optimize:clear</code>.</li>
+                        </ul>
+                    </div>
+                    <div class="mini-card">
+                        <h3>If Images Are Missing</h3>
+                        <ul class="check-list">
+                            <li>Run <code>php artisan storage:link</code>.</li>
+                            <li>Check whether <code>public/storage</code> is a valid symlink.</li>
+                            <li>If symlinks are blocked, ask the host for symlink support or expose files manually.</li>
+                            <li>Verify uploaded logos and avatars exist in <code>storage/app/public</code>.</li>
+                        </ul>
+                    </div>
                 </div>
             </section>
 
-            <section id="manual">
+            <section id="manual" class="doc-section" data-search="manual setup composer artisan migrate build env production commands">
                 <span class="eyebrow">Advanced</span>
-                <h2>Manual Setup</h2>
+                <h2>Manual Setup Commands</h2>
                 <pre><code>composer install --no-dev --optimize-autoloader
 cp .env.example .env
 php artisan key:generate
-php artisan migrate --seed
+php artisan migrate --seed --force
 php artisan storage:link
+npm install
+npm run build
 php artisan optimize:clear</code></pre>
-                <p>API authentication depends on all migrations being present, including the <code>api_tokens</code> table migration.</p>
+                <p>API authentication depends on all migrations being present, including the <code>api_tokens</code> table migration. On production, update the live <code>.env</code> with your real domain and database credentials before caching config.</p>
             </section>
 
-            <section id="permissions">
+            <section id="permissions" class="doc-section" data-search="permissions writable storage bootstrap cache storage link symlink">
                 <span class="eyebrow">Security</span>
-                <h2>File Permissions</h2>
+                <h2>File Permissions and Writable Paths</h2>
                 <ul class="check-list">
                     <li><code>storage/</code> must be writable</li>
                     <li><code>bootstrap/cache/</code> must be writable</li>
                     <li><code>public/storage</code> should be a symlink to <code>storage/app/public</code></li>
+                    <li><code>public/build</code> must stay readable after upload</li>
                 </ul>
-                <p>If uploads are not visible, verify the storage link from admin settings or run <code>php artisan storage:link</code>.</p>
+                <p>If uploads are not visible, verify the storage link from admin settings or run <code>php artisan storage:link</code>. If the host blocks symlinks, contact the hosting provider or expose files through their supported method.</p>
             </section>
 
-            <section id="admin">
+            <section id="admin" class="doc-section" data-search="admin setup branding payment quiz content users legal pages settings">
                 <span class="eyebrow">After Install</span>
                 <h2>Admin Setup Checklist</h2>
                 <div class="card-grid">
                     <article class="mini-card">
                         <h3>Branding</h3>
-                        <p>Configure logo, homepage content, and platform identity.</p>
+                        <p>Configure logo, favicon, homepage hero content, metadata, and platform identity.</p>
                     </article>
                     <article class="mini-card">
                         <h3>Payments</h3>
-                        <p>Enable Stripe or Razorpay before selling premium quizzes.</p>
+                        <p>Enable Stripe or Razorpay before selling premium quizzes and always test payment success and failure flows.</p>
                     </article>
                     <article class="mini-card">
                         <h3>Quiz Content</h3>
-                        <p>Create categories, quizzes, and questions before inviting users.</p>
+                        <p>Create categories, quizzes, questions, and upload media before inviting students.</p>
                     </article>
                     <article class="mini-card">
-                        <h3>Users</h3>
-                        <p>Review roles, active status, and permissions for Admin, Teacher, and Student accounts.</p>
+                        <h3>Users and Policies</h3>
+                        <p>Review roles, active status, privacy policy, terms, refund policy, and support email.</p>
                     </article>
                 </div>
             </section>
 
-            <section id="api-reference">
+            <section id="scaling" class="doc-section" data-search="scalability reusable production scaling sessions cache queue redis s3 cloud api">
+                <span class="eyebrow">Scalability</span>
+                <h2>How to Keep the Project Scalable and Reusable</h2>
+                <div class="card-grid">
+                    <article class="mini-card">
+                        <h3>Database Sessions and Cache</h3>
+                        <p>For shared hosting and simple production environments, database-backed sessions and cache are easier to manage consistently than file-based storage.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>Queue Readiness</h3>
+                        <p>The project is already prepared for database queue jobs. Move to Redis queues on higher-traffic deployments.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>Cloud Media</h3>
+                        <p>When scaling to multiple servers, use S3 or another cloud disk instead of local uploaded files.</p>
+                    </article>
+                    <article class="mini-card">
+                        <h3>Reusable API</h3>
+                        <p>The JSON API is suitable for mobile apps, external dashboards, and partner portals with bearer-token authentication.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="api-reference" class="doc-section" data-search="api reference base url auth format content type rate limit">
                 <span class="eyebrow">JSON API</span>
                 <h2>API Overview</h2>
                 <p>The platform exposes a full JSON API for authentication, quiz browsing, quiz play, result history, payments, and admin management. The API is designed to be secure, scalable, and reusable across web and mobile clients.</p>
@@ -164,52 +279,14 @@ php artisan optimize:clear</code></pre>
                     </article>
                 </div>
                 <div class="callout success">
-                    <strong>Recommended headers:</strong> Send <code>Accept: application/json</code> on every request. Use <code>Content-Type: application/json</code> for JSON body requests.
+                    <strong>Recommended headers:</strong> send <code>Accept: application/json</code> on every request and use <code>Content-Type: application/json</code> for JSON body requests.
                 </div>
                 <pre><code>Accept: application/json
 Content-Type: application/json
 Authorization: Bearer YOUR_TOKEN</code></pre>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Group</th>
-                                <th>Who Can Access</th>
-                                <th>Examples</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Public</td>
-                                <td>Anyone</td>
-                                <td><code>/api/ping</code>, <code>/api/meta</code>, <code>/api/quizzes</code></td>
-                            </tr>
-                            <tr>
-                                <td>Auth</td>
-                                <td>Anyone for login or register, authenticated users for profile or logout</td>
-                                <td><code>/api/auth/login</code>, <code>/api/auth/me</code></td>
-                            </tr>
-                            <tr>
-                                <td>Student</td>
-                                <td>Authenticated users</td>
-                                <td><code>/api/dashboard</code>, <code>/api/my/attempts</code>, <code>/api/quizzes/{quiz}/submit</code></td>
-                            </tr>
-                            <tr>
-                                <td>Payments</td>
-                                <td>Authenticated users</td>
-                                <td><code>/api/payments/history</code>, <code>/api/payments/{quiz}/checkout</code></td>
-                            </tr>
-                            <tr>
-                                <td>Admin</td>
-                                <td>Teacher or Admin, with some routes Admin-only</td>
-                                <td><code>/api/admin/quizzes</code>, <code>/api/admin/users</code></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
             </section>
 
-            <section id="api-auth">
+            <section id="api-auth" class="doc-section" data-search="auth api login register me logout bearer token">
                 <span class="eyebrow">Authentication</span>
                 <h2>Auth API</h2>
                 <div class="endpoint-grid">
@@ -236,81 +313,19 @@ Authorization: Bearer YOUR_TOKEN</code></pre>
   "user": {
     "id": 1,
     "name": "Admin",
-    "email": "admin@example.com",
-    "phone": null,
-    "avatar_url": "https://your-domain.com/storage/avatars/example.png",
-    "role": {
-      "id": 1,
-      "name": "Admin",
-      "slug": "admin"
-    },
-    "is_active": true
+    "email": "admin@example.com"
   }
 }</code></pre>
                             </div>
                         </div>
-                        <div class="note-list">
-                            <span><strong>Required fields:</strong> <code>email</code>, <code>password</code></span>
-                            <span><strong>Optional fields:</strong> <code>device_name</code></span>
-                            <span><strong>Content type:</strong> <code>application/json</code> or <code>application/x-www-form-urlencoded</code></span>
-                        </div>
                     </article>
-
-                    <article class="endpoint-card">
-                        <div class="endpoint-head">
-                            <span class="method get">GET</span>
-                            <code>/api/auth/login</code>
-                        </div>
-                        <p>Returns endpoint usage help when opened directly in the browser.</p>
-                        <pre><code>{
-  "message": "Use POST to log in and receive a bearer token.",
-  "endpoint": "/api/auth/login",
-  "method": "POST",
-  "content_type": "application/json or application/x-www-form-urlencoded",
-  "required_fields": ["email", "password"],
-  "optional_fields": ["device_name"]
-}</code></pre>
-                    </article>
-
-                    <article class="endpoint-card">
+                    <article class="endpoint-card compact">
                         <div class="endpoint-head">
                             <span class="method post">POST</span>
                             <code>/api/auth/register</code>
                         </div>
                         <p>Create a student account and receive a bearer token immediately.</p>
-                        <pre><code>{
-  "name": "Student User",
-  "email": "student@example.com",
-  "password": "Password123!",
-  "password_confirmation": "Password123!",
-  "phone": "9876543210",
-  "device_name": "android-app"
-}</code></pre>
-                        <pre><code>{
-  "message": "Registration successful.",
-  "token": "plain-text-api-token",
-  "token_type": "Bearer",
-  "user": {
-    "id": 12,
-    "name": "Student User",
-    "email": "student@example.com",
-    "role": {
-      "id": 3,
-      "name": "Student",
-      "slug": "student"
-    }
-  }
-}</code></pre>
                     </article>
-
-                    <article class="endpoint-card compact">
-                        <div class="endpoint-head">
-                            <span class="method get">GET</span>
-                            <code>/api/auth/register</code>
-                        </div>
-                        <p>Returns browser-safe registration instructions and required fields.</p>
-                    </article>
-
                     <article class="endpoint-card compact">
                         <div class="endpoint-head">
                             <span class="method get">GET</span>
@@ -318,15 +333,6 @@ Authorization: Bearer YOUR_TOKEN</code></pre>
                         </div>
                         <p>Returns the authenticated user profile.</p>
                     </article>
-
-                    <article class="endpoint-card compact">
-                        <div class="endpoint-head">
-                            <span class="method put">PUT</span>
-                            <code>/api/auth/me</code>
-                        </div>
-                        <p>Updates profile fields including name, email, phone, avatar, and password.</p>
-                    </article>
-
                     <article class="endpoint-card compact">
                         <div class="endpoint-head">
                             <span class="method post">POST</span>
@@ -337,167 +343,38 @@ Authorization: Bearer YOUR_TOKEN</code></pre>
                 </div>
             </section>
 
-            <section id="api-public">
+            <section id="api-public" class="doc-section" data-search="public api ping meta categories quizzes">
                 <span class="eyebrow">Public Endpoints</span>
                 <h2>Public Quiz API</h2>
                 <div class="endpoint-list">
                     <div class="endpoint-row"><span class="method get">GET</span><code>/api/ping</code><span>Simple health check for apps and uptime monitors.</span></div>
                     <div class="endpoint-row"><span class="method get">GET</span><code>/api/meta</code><span>Returns platform enums and metadata for building forms dynamically.</span></div>
                     <div class="endpoint-row"><span class="method get">GET</span><code>/api/categories</code><span>Returns active quiz categories.</span></div>
-                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/quizzes</code><span>Returns public quiz listing with pagination. Query params: <code>category</code>, <code>per_page</code>.</span></div>
-                </div>
-                <div class="two-col">
-                    <div>
-                        <h3>Example: <code>GET /api/meta</code></h3>
-                        <pre><code>{
-  "data": {
-    "question_types": ["multiple_choice", "true_false", "short_answer"],
-    "quiz_access_types": ["free", "premium"],
-    "quiz_difficulties": ["beginner", "intermediate", "advanced"],
-    "roles": [
-      { "id": 1, "name": "Admin", "slug": "admin" },
-      { "id": 2, "name": "Teacher", "slug": "teacher" },
-      { "id": 3, "name": "Student", "slug": "student" }
-    ],
-    "payment_statuses": ["pending", "paid", "failed"],
-    "payment_providers": ["stripe", "razorpay"],
-    "active_payment_gateway": "stripe"
-  }
-}</code></pre>
-                    </div>
-                    <div>
-                        <h3>Example: <code>GET /api/quizzes</code></h3>
-                        <pre><code>{
-  "data": [
-    {
-      "id": 1,
-      "title": "Modern Culture Challenge",
-      "slug": "modern-culture-challenge",
-      "difficulty": "beginner",
-      "access_type": "free",
-      "questions_count": 20
-    }
-  ],
-  "meta": {
-    "current_page": 1,
-    "last_page": 3,
-    "per_page": 10,
-    "total": 25
-  }
-}</code></pre>
-                    </div>
+                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/quizzes</code><span>Returns public quiz listing with pagination.</span></div>
                 </div>
             </section>
 
-            <section id="api-student">
+            <section id="api-student" class="doc-section" data-search="student api dashboard quiz submit attempts results">
                 <span class="eyebrow">Authenticated User</span>
                 <h2>Student API</h2>
                 <div class="endpoint-list">
-                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/dashboard</code><span>Returns personal stats, recent attempts, and latest quizzes. Admins and Teachers also receive platform stats.</span></div>
+                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/dashboard</code><span>Returns personal stats, recent attempts, and latest quizzes.</span></div>
                     <div class="endpoint-row"><span class="method get">GET</span><code>/api/quizzes/{quiz}</code><span>Returns quiz detail including questions and access state for the current user.</span></div>
                     <div class="endpoint-row"><span class="method post">POST</span><code>/api/quizzes/{quiz}/submit</code><span>Submits answers and creates an attempt record.</span></div>
-                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/quizzes/{quiz}/attempts/{attempt}</code><span>Returns a detailed result for one of the authenticated user's attempts.</span></div>
-                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/my/attempts</code><span>Returns paginated attempt history for the current user.</span></div>
-                </div>
-                <div class="endpoint-grid single-row">
-                    <article class="endpoint-card">
-                        <div class="endpoint-head">
-                            <span class="method get">GET</span>
-                            <code>/api/dashboard</code>
-                        </div>
-                        <pre><code>{
-  "personal_stats": {
-    "quiz_visits": 18,
-    "quizzes_played": 5,
-    "attempts": 8,
-    "average_score": 76.5
-  },
-  "platform_stats": null,
-  "recent_attempts": [],
-  "latest_quizzes": []
-}</code></pre>
-                    </article>
-                    <article class="endpoint-card">
-                        <div class="endpoint-head">
-                            <span class="method post">POST</span>
-                            <code>/api/quizzes/{quiz}/submit</code>
-                        </div>
-                        <h3>Request</h3>
-                        <pre><code>{
-  "answers": [
-    { "question_id": 10, "selected_option_id": 34 },
-    { "question_id": 11, "selected_option_id": 40 }
-  ]
-}</code></pre>
-                        <h3>Response</h3>
-                        <pre><code>{
-  "message": "Quiz submitted successfully.",
-  "data": {
-    "id": 25,
-    "score": 8,
-    "percentage": 80,
-    "submitted_at": "2026-03-20T10:30:00Z"
-  }
-}</code></pre>
-                    </article>
                 </div>
             </section>
 
-            <section id="api-payments">
+            <section id="api-payments" class="doc-section" data-search="payments api stripe razorpay checkout history premium">
                 <span class="eyebrow">Premium Access</span>
                 <h2>Payments API</h2>
                 <div class="endpoint-list">
-                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/payments/history</code><span>Returns paginated payment history for the authenticated user with summary and filters in meta.</span></div>
-                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/payments/{payment}</code><span>Returns a single payment record for the current user.</span></div>
+                    <div class="endpoint-row"><span class="method get">GET</span><code>/api/payments/history</code><span>Returns paginated payment history for the authenticated user.</span></div>
                     <div class="endpoint-row"><span class="method post">POST</span><code>/api/payments/{quiz}/checkout</code><span>Creates a payment session for a premium quiz.</span></div>
                     <div class="endpoint-row"><span class="method post">POST</span><code>/api/payments/{payment}/razorpay/verify</code><span>Completes Razorpay verification and marks the payment successful.</span></div>
                 </div>
-                <div class="two-col">
-                    <div>
-                        <h3>Example: checkout response</h3>
-                        <pre><code>{
-  "message": "Checkout session created successfully.",
-  "data": {
-    "payment": {
-      "id": 8,
-      "provider": "stripe",
-      "amount": 199,
-      "currency": "INR",
-      "status": "pending"
-    },
-    "gateway": "stripe",
-    "redirect_url": "https://checkout.stripe.com/..."
-  }
-}</code></pre>
-                    </div>
-                    <div>
-                        <h3>Example: history response</h3>
-                        <pre><code>{
-  "data": [
-    {
-      "id": 8,
-      "provider": "stripe",
-      "status": "paid",
-      "amount": 199,
-      "currency": "INR"
-    }
-  ],
-  "meta": {
-    "current_page": 1,
-    "last_page": 1,
-    "per_page": 12,
-    "total": 1,
-    "summary": {
-      "total_amount": 199,
-      "paid_count": 1
-    }
-  }
-}</code></pre>
-                    </div>
-                </div>
             </section>
 
-            <section id="api-admin">
+            <section id="api-admin" class="doc-section" data-search="admin api categories quizzes questions ai users payments">
                 <span class="eyebrow">Management</span>
                 <h2>Admin API</h2>
                 <p>These endpoints are intended for dashboards, staff tools, and back-office integrations. Category, quiz, question, and AI generation endpoints are available to Teachers and Admins. User and payment management endpoints are Admin-only.</p>
@@ -509,7 +386,6 @@ Authorization: Bearer YOUR_TOKEN</code></pre>
                             <li><code>POST /api/admin/categories</code></li>
                             <li><code>GET /api/admin/categories/{category}</code></li>
                             <li><code>PUT /api/admin/categories/{category}</code></li>
-                            <li><code>DELETE /api/admin/categories/{category}</code></li>
                         </ul>
                     </article>
                     <article class="api-group-card">
@@ -519,9 +395,6 @@ Authorization: Bearer YOUR_TOKEN</code></pre>
                             <li><code>POST /api/admin/quizzes</code></li>
                             <li><code>GET /api/admin/quizzes/{quiz}</code></li>
                             <li><code>PUT /api/admin/quizzes/{quiz}</code></li>
-                            <li><code>DELETE /api/admin/quizzes/{quiz}</code></li>
-                            <li><code>GET /api/admin/quizzes/{quiz}/export</code></li>
-                            <li><code>POST /api/admin/quizzes/{quiz}/import</code></li>
                         </ul>
                     </article>
                     <article class="api-group-card">
@@ -531,13 +404,6 @@ Authorization: Bearer YOUR_TOKEN</code></pre>
                             <li><code>POST /api/admin/questions</code></li>
                             <li><code>GET /api/admin/questions/{question}</code></li>
                             <li><code>PUT /api/admin/questions/{question}</code></li>
-                            <li><code>DELETE /api/admin/questions/{question}</code></li>
-                        </ul>
-                    </article>
-                    <article class="api-group-card">
-                        <h3>AI Generation</h3>
-                        <ul class="compact-list">
-                            <li><code>POST /api/ai/questions/generate</code></li>
                         </ul>
                     </article>
                     <article class="api-group-card">
@@ -545,48 +411,14 @@ Authorization: Bearer YOUR_TOKEN</code></pre>
                         <ul class="compact-list">
                             <li><code>GET /api/admin/users</code></li>
                             <li><code>POST /api/admin/users</code></li>
-                            <li><code>GET /api/admin/users/{user}</code></li>
                             <li><code>PUT /api/admin/users/{user}</code></li>
                             <li><code>DELETE /api/admin/users/{user}</code></li>
                         </ul>
                     </article>
-                    <article class="api-group-card">
-                        <h3>Admin Payments</h3>
-                        <ul class="compact-list">
-                            <li><code>GET /api/admin/payments</code></li>
-                            <li><code>GET /api/admin/payments/{payment}</code></li>
-                        </ul>
-                    </article>
-                </div>
-                <div class="two-col">
-                    <div>
-                        <h3>Example: create quiz request</h3>
-                        <pre><code>{
-  "title": "Aviation Basics Mock Test",
-  "description": "Practice exam for new students",
-  "category_id": 1,
-  "difficulty": "beginner",
-  "access_type": "premium",
-  "price": 199,
-  "is_active": true
-}</code></pre>
-                    </div>
-                    <div>
-                        <h3>Example: create question request</h3>
-                        <pre><code>{
-  "quiz_id": 1,
-  "question": "What does ATC stand for?",
-  "type": "multiple_choice",
-  "options": [
-    { "text": "Air Traffic Control", "is_correct": true },
-    { "text": "Airline Travel Center", "is_correct": false }
-  ]
-}</code></pre>
-                    </div>
                 </div>
             </section>
 
-            <section id="api-errors">
+            <section id="api-errors" class="doc-section" data-search="errors security 404 405 429 headers api error responses">
                 <span class="eyebrow">Reliability</span>
                 <h2>Errors and Security</h2>
                 <div class="card-grid">
@@ -607,33 +439,23 @@ Authorization: Bearer YOUR_TOKEN</code></pre>
                         <p>API responses include hardened headers such as <code>X-Frame-Options</code>, <code>X-Content-Type-Options</code>, and cache restrictions for auth-sensitive responses.</p>
                     </article>
                 </div>
-                <h3>Common error responses</h3>
-                <div class="two-col">
-                    <pre><code>{
-  "message": "The provided credentials do not match our records."
-}</code></pre>
-                    <pre><code>{
-  "message": "An unexpected API error occurred.",
-  "status": 500
-}</code></pre>
-                </div>
             </section>
 
-            <section id="faq">
+            <section id="faq" class="doc-section" data-search="faq troubleshooting css shared hosting login 500 uploads auth browser">
                 <span class="eyebrow">Troubleshooting</span>
                 <h2>Frequently Asked Questions</h2>
                 <div class="faq-grid">
                     <article class="faq-item">
+                        <h3>Why does the hosted site load without CSS?</h3>
+                        <p>Check that <code>public/build/manifest.json</code> exists on the server, the full <code>public/build/assets</code> directory was uploaded, the domain points to the correct folder, and <code>php artisan optimize:clear</code> has been run after the latest deployment.</p>
+                    </article>
+                    <article class="faq-item">
                         <h3>Why does login return a 500 error?</h3>
-                        <p>Check pending migrations, clear Laravel caches with <code>php artisan optimize:clear</code>, and make sure the running server uses the same database as your terminal.</p>
+                        <p>Check pending migrations, clear Laravel caches with <code>php artisan optimize:clear</code>, and make sure the running server uses the same database credentials that exist in the live <code>.env</code>.</p>
                     </article>
                     <article class="faq-item">
-                        <h3>Why do uploaded avatars not load?</h3>
-                        <p>Make sure <code>public/storage</code> is a valid symlink to <code>storage/app/public</code>.</p>
-                    </article>
-                    <article class="faq-item">
-                        <h3>Why do auth endpoints show JSON in the browser?</h3>
-                        <p>That is intentional. Browser-safe help responses prevent confusing 405 HTML pages for API-only routes.</p>
+                        <h3>Why do uploaded avatars or logos not load?</h3>
+                        <p>Make sure <code>public/storage</code> is a valid symlink to <code>storage/app/public</code> or that your host exposes uploaded files correctly if symlinks are disabled.</p>
                     </article>
                     <article class="faq-item">
                         <h3>How should mobile apps store tokens?</h3>
@@ -642,15 +464,32 @@ Authorization: Bearer YOUR_TOKEN</code></pre>
                 </div>
             </section>
 
-            <section id="support">
+            <section id="support" class="doc-section" data-search="support notes issue report help logs request response timestamp">
                 <span class="eyebrow">Need Help</span>
                 <h2>Support Notes</h2>
-                <p>When requesting support, include the endpoint, HTTP method, request body, response body, and the exact timestamp of the issue. That makes server log checks much faster.</p>
+                <p>When requesting support, include the domain, exact URL, HTTP method, request body, response body, screenshot of the issue, and exact timestamp. That makes server log checks much faster.</p>
                 <div class="callout success">
-                    <strong>Best practice:</strong> Keep this documentation updated whenever you add a new API resource, new role restriction, or new payment provider.
+                    <strong>Best practice:</strong> keep this documentation updated whenever you add a new API resource, new role restriction, new deployment step, or new payment provider.
                 </div>
             </section>
         </main>
     </div>
+
+    <script>
+        const searchInput = document.getElementById('doc-search-input');
+        const sections = Array.from(document.querySelectorAll('.doc-section'));
+
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.trim().toLowerCase();
+
+                sections.forEach((section) => {
+                    const haystack = [section.textContent || '', section.dataset.search || ''].join(' ').toLowerCase();
+                    const matched = query === '' || haystack.includes(query);
+                    section.classList.toggle('is-hidden', !matched);
+                });
+            });
+        }
+    </script>
 </body>
 </html>
